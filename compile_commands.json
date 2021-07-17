@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/sam/Dev/miniahrs_driver/build",
+  "command": "/usr/bin/c++   -I/home/sam/Dev/miniahrs_driver/include -I/opt/ros/melodic/include    -o CMakeFiles/mini_ahrs_driver.dir/src/MiniAHRSDriver.cpp.o -c /home/sam/Dev/miniahrs_driver/src/MiniAHRSDriver.cpp",
+  "file": "/home/sam/Dev/miniahrs_driver/src/MiniAHRSDriver.cpp"
+}
+]
