@@ -10,7 +10,7 @@ void print_usage() {
 }
 
 struct ahrs_callback {
-    void operator()(mini_ahrs_driver::AHRSOrientationData data) {
+    void operator()(const mini_ahrs_driver::AHRSOrientationData& data) {
         std::cout << std::dec << "Y " << data.yaw_degrees << " P " << data.pitch_degrees << " R " << data.roll_degrees << "    \r" << std::flush;
     }
 };
@@ -38,12 +38,13 @@ int main(int argc, char** argv) {
 
     ahrs_callback cb;
     ahrs_driver->setCallback(
-        std::function<void(mini_ahrs_driver::AHRSOrientationData)>(cb)
+        std::function<void(const mini_ahrs_driver::AHRSOrientationData&)>(cb)
     );
 
     std::cout << "Starting MiniAHRS driver." << std::endl;
     bool success = ahrs_driver->start();
     if (!success) {
+        std::cout << "Failed to start MiniAHRS driver!" << std::endl;
         ahrs_driver->stop();
     } else {
         while(1) {}

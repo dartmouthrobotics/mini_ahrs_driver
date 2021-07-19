@@ -35,14 +35,14 @@ MiniAHRSDriver::~MiniAHRSDriver()
     serial_connection_.close();
 }
 
-void MiniAHRSDriver::setCallback(std::function<void(AHRSOrientationData)> cb) {
+void MiniAHRSDriver::setCallback(std::function<void(const AHRSOrientationData&)> cb) {
     data_callback_ = cb;
 }
 
 bool MiniAHRSDriver::start() {
     StopDeviceCommandPacket stop_command;
     serial_connection_.write(stop_command.buffer);
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     serial_connection_.read(serial_connection_.available()); // clear the buf
 
     run_polling_thread_ = true;
@@ -50,7 +50,7 @@ bool MiniAHRSDriver::start() {
 
     serial_connection_.write(get_device_info_command.buffer);
     worker_thread_ = std::thread(&MiniAHRSDriver::workerThreadMain, this); 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
     if (!have_device_info_) {
         run_polling_thread_ = false;
@@ -62,7 +62,7 @@ bool MiniAHRSDriver::start() {
     ReadMiniAHRSParamsCommandPacket read_params_packet;
     serial_connection_.write(read_params_packet.buffer); 
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     if (!have_device_params_) {
         run_polling_thread_ = false;

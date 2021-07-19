@@ -41,7 +41,7 @@ public:
     MiniAHRSDriver(std::string serial_port_path, int baudrate);
     bool start();
     void stop();
-    void setCallback(std::function<void(AHRSOrientationData)> cb);
+    void setCallback(std::function<void(const AHRSOrientationData&)> cb);
 
     void AHRSDataPollingLoop();
 
