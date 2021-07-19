@@ -45,15 +45,6 @@ int main(int argc, char** argv) {
     bool success = ahrs_driver->start();
     if (!success) {
         ahrs_driver->stop();
-        ahrs_driver->serial_connection_.close();
-        ahrs_driver->serial_connection_.open();
-    } else {
-        while(1) {}
-    }
-
-    success = ahrs_driver->start();
-    if (!success) {
-        ahrs_driver->stop();
     } else {
         while(1) {}
     }

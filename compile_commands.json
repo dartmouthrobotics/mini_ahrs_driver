@@ -1,7 +1,12 @@
 [
 {
-  "directory": "/home/sam/Dev/miniahrs_driver/build",
-  "command": "/usr/bin/c++   -I/home/sam/Dev/miniahrs_driver/include -I/opt/ros/melodic/include    -o CMakeFiles/mini_ahrs_driver.dir/src/MiniAHRSDriver.cpp.o -c /home/sam/Dev/miniahrs_driver/src/MiniAHRSDriver.cpp",
-  "file": "/home/sam/Dev/miniahrs_driver/src/MiniAHRSDriver.cpp"
+  "directory": "/home/sam/Dev/ros-catkin-workspace/src/miniahrs_driver/build",
+  "command": "/usr/bin/c++   -I/home/sam/Dev/ros-catkin-workspace/src/miniahrs_driver/include -I/opt/ros/melodic/include    -std=gnu++11 -o CMakeFiles/mini_ahrs_driver.dir/src/MiniAHRSDriver.cpp.o -c /home/sam/Dev/ros-catkin-workspace/src/miniahrs_driver/src/MiniAHRSDriver.cpp",
+  "file": "/home/sam/Dev/ros-catkin-workspace/src/miniahrs_driver/src/MiniAHRSDriver.cpp"
+},
+{
+  "directory": "/home/sam/Dev/ros-catkin-workspace/src/miniahrs_driver/build",
+  "command": "/usr/bin/c++   -I/home/sam/Dev/ros-catkin-workspace/src/miniahrs_driver/include -I/opt/ros/melodic/include    -std=gnu++11 -o CMakeFiles/read_from_ahrs.dir/examples/read_from_ahrs.cpp.o -c /home/sam/Dev/ros-catkin-workspace/src/miniahrs_driver/examples/read_from_ahrs.cpp",
+  "file": "/home/sam/Dev/ros-catkin-workspace/src/miniahrs_driver/examples/read_from_ahrs.cpp"
 }
 ]

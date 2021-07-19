@@ -12,7 +12,6 @@ MiniAHRSDriver::MiniAHRSDriver(std::string serial_port_path, int baudrate) : ser
     if (!serial_connection_.isOpen()) {
         throw std::runtime_error("Could not open serial port!");
     }
-    serial_connection_.flush();
 }
 
 bool MiniAHRSDriver::isRunning() {
@@ -41,27 +40,19 @@ void MiniAHRSDriver::setCallback(std::function<void(AHRSOrientationData)> cb) {
 }
 
 bool MiniAHRSDriver::start() {
-    // get device info then do initial alignment then start streaming
-    //
-    //
-    // so that is 1. get device info to test connection
-    // 2. get params & read how long initial alignment time is
-    // 3. report
-    serial_connection_.flush();
     StopDeviceCommandPacket stop_command;
     serial_connection_.write(stop_command.buffer);
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    serial_connection_.flush();
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    serial_connection_.read(serial_connection_.available()); // clear the buf
 
     run_polling_thread_ = true;
     GetDeviceInfoCommandPacket get_device_info_command;
 
     serial_connection_.write(get_device_info_command.buffer);
     worker_thread_ = std::thread(&MiniAHRSDriver::workerThreadMain, this); 
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     if (!have_device_info_) {
-        std::cerr << "Could not start device!!" << std::endl;
         run_polling_thread_ = false;
         worker_thread_.join();
 
@@ -74,7 +65,6 @@ bool MiniAHRSDriver::start() {
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
     if (!have_device_params_) {
-        std::cerr << "Could not read device params!!" << std::endl;
         run_polling_thread_ = false;
         worker_thread_.join();
 
