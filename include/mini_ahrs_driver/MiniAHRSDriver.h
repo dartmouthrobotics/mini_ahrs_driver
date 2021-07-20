@@ -44,7 +44,7 @@ public:
     std::string device_serial_number_;
     std::string device_firmware_version_;
 
-    MiniAHRSDriver(std::string serial_port_path, int baudrate, double KA, double KG);
+    MiniAHRSDriver(std::string serial_port_path, int baudrate, double KA, double KG, bool verbose);
     bool start();
     void stop();
     void setCallback(std::function<void(const AHRSOrientationData&)> cb);
@@ -56,6 +56,8 @@ public:
     ~MiniAHRSDriver();
     serial::Serial serial_connection_;
 private:
+    bool verbose_;
+
     std::function<void(AHRSOrientationData)> data_callback_;
     std::thread worker_thread_;
 

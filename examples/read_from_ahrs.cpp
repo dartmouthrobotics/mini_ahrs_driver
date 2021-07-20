@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 
     std::cout << "Creating serial port instance for path " << serial_port << " at baudrate " << baudrate << std::endl;
     try {
-        ahrs_driver = std::unique_ptr<mini_ahrs_driver::MiniAHRSDriver>(new mini_ahrs_driver::MiniAHRSDriver(serial_port, baudrate, 1.0, 1.0));
+        ahrs_driver = std::unique_ptr<mini_ahrs_driver::MiniAHRSDriver>(new mini_ahrs_driver::MiniAHRSDriver(serial_port, baudrate, 1.0, 1.0, true));
     } catch(const serial::IOException& e) {
         std::cout << "Could not connect to serial port at " << serial_port << std::endl;
         std::cout << "error: " << e.what() << std::endl;

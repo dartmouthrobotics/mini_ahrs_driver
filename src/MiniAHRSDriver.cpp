@@ -7,7 +7,7 @@
 namespace mini_ahrs_driver
 {
 
-MiniAHRSDriver::MiniAHRSDriver(std::string serial_port_path, int baudrate, double KA, double KG) : serial_connection_(serial_port_path, baudrate, serial::Timeout::simpleTimeout(SERIAL_CONNECT_TIMEOUT_MS)), run_polling_thread_(false), have_device_params_(false), KA_(KA), KG_(KG)
+MiniAHRSDriver::MiniAHRSDriver(std::string serial_port_path, int baudrate, double KA, double KG, bool verbose) : serial_connection_(serial_port_path, baudrate, serial::Timeout::simpleTimeout(SERIAL_CONNECT_TIMEOUT_MS)), run_polling_thread_(false), have_device_params_(false), KA_(KA), KG_(KG), verbose_(verbose)
 {
     if (!serial_connection_.isOpen()) {
         throw std::runtime_error(std::string("Could not open serial port at path ") + serial_port_path);
@@ -40,19 +40,42 @@ void MiniAHRSDriver::setCallback(std::function<void(const AHRSOrientationData&)>
 }
 
 bool MiniAHRSDriver::start() {
+    if (verbose_) {
+        std::cout << "Entering start() function. serial port available: " << serial_connection_.available() << std::endl;
+        std::cout << "Writing stop packet" << std::endl;
+    }
+
     StopDeviceCommandPacket stop_command;
     serial_connection_.write(stop_command.buffer);
+
+    if (verbose_) {
+        std::cout << "Waiting for stop packet to be processed" << std::endl;
+    }
+
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+    if (verbose_) {
+        std::cout << "After stop packet avaiable bytes: " << serial_connection_.available() << std::endl;
+    }
+
     serial_connection_.read(serial_connection_.available()); // clear the buf
 
-    run_polling_thread_ = true;
-    GetDeviceInfoCommandPacket get_device_info_command;
 
+    GetDeviceInfoCommandPacket get_device_info_command;
     serial_connection_.write(get_device_info_command.buffer);
+
+    if (verbose_) {
+        std::cout << "Starting polling thread." << std::endl;
+    }
+
+    run_polling_thread_ = true;
     worker_thread_ = std::thread(&MiniAHRSDriver::workerThreadMain, this); 
     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
     if (!have_device_info_) {
+        if (verbose_) {
+            std::cout << "No device info after GetDeviceInfo packet sent." << std::endl;
+        }
         run_polling_thread_ = false;
         worker_thread_.join();
 
@@ -298,11 +321,13 @@ void MiniAHRSDriver::AHRSDataPollingLoop() {
     try {
         parsed_header = parseHeader(message_header);
     } catch (std::runtime_error e) {
-        //std::cout << "Invalid header!" << std::endl;
-        //for (auto& byte : message_header) {
-        //    std::cout << std::hex << int(byte) << " ";
-        //}
-        //std::cout << std::endl;
+        if (verbose_) {
+            std::cout << "Invalid header!" << std::endl;
+            for (auto& byte : message_header) {
+                std::cout << std::hex << int(byte) << " ";
+            }
+            std::cout << std::endl;
+        }
         throw std::runtime_error("Invalid header received. Cannot continue parsing!");
     }
 
