@@ -7,10 +7,10 @@
 namespace mini_ahrs_driver
 {
 
-MiniAHRSDriver::MiniAHRSDriver(std::string serial_port_path, int baudrate) : serial_connection_(serial_port_path, baudrate, serial::Timeout::simpleTimeout(SERIAL_CONNECT_TIMEOUT_MS)), run_polling_thread_(false), have_device_params_(false)
+MiniAHRSDriver::MiniAHRSDriver(std::string serial_port_path, int baudrate, double KA, double KG) : serial_connection_(serial_port_path, baudrate, serial::Timeout::simpleTimeout(SERIAL_CONNECT_TIMEOUT_MS)), run_polling_thread_(false), have_device_params_(false), KA_(KA), KG_(KG)
 {
     if (!serial_connection_.isOpen()) {
-        throw std::runtime_error("Could not open serial port!");
+        throw std::runtime_error(std::string("Could not open serial port at path ") + serial_port_path);
     }
 }
 
@@ -199,22 +199,24 @@ AHRSOrientationData MiniAHRSDriver::parseOrientationData(const std::vector<uint8
 
     std::memcpy(&temperature, &temp_raw, sizeof temperature);
 
-    float KG = 1.0;
-    float KA = 1.0;
+    result.acc_x = double(acc_x) / KA_;
+    result.acc_y = double(acc_y) / KA_;
+    result.acc_z = double(acc_z) / KA_;
 
-    result.acc_x = float(acc_x) / KA;
-    result.acc_y = float(acc_y) / KA;
-    result.acc_z = float(acc_z) / KA;
+    result.gyro_x = double(gyro_x) / KG_;
+    result.gyro_y = double(gyro_y) / KG_;
+    result.gyro_z = double(gyro_z) / KG_;
 
-    result.mag_x = float(mag_x) * 10.0;
-    result.mag_y = float(mag_y) * 10.0;
-    result.mag_z = float(mag_z) * 10.0;
+    double nano_tesla_to_tesla = 1.0 / 1.0e-9; 
+    result.mag_x = double(mag_x) * 10.0;
+    result.mag_y = double(mag_y) * 10.0;
+    result.mag_z = double(mag_z) * 10.0;
 
-    result.yaw_degrees = float(yaw) / 100.0;
-    result.pitch_degrees = float(pitch) / 100.0;
-    result.roll_degrees = float(roll) / 100.0;
+    result.yaw_degrees = double(yaw) / 100.0;
+    result.pitch_degrees = double(pitch) / 100.0;
+    result.roll_degrees = double(roll) / 100.0;
 
-    result.temperature = float(temperature) / 10.0;
+    result.temperature = double(temperature) / 10.0;
 
     return result;
 }
@@ -296,12 +298,12 @@ void MiniAHRSDriver::AHRSDataPollingLoop() {
     try {
         parsed_header = parseHeader(message_header);
     } catch (std::runtime_error e) {
-        std::cout << "Invalid header!" << std::endl;
-        for (auto& byte : message_header) {
-            std::cout << std::hex << int(byte) << " ";
-        }
-        std::cout << std::endl;
-        throw std::runtime_error("a");
+        //std::cout << "Invalid header!" << std::endl;
+        //for (auto& byte : message_header) {
+        //    std::cout << std::hex << int(byte) << " ";
+        //}
+        //std::cout << std::endl;
+        throw std::runtime_error("Invalid header received. Cannot continue parsing!");
     }
 
     std::vector<uint8_t> message_body;

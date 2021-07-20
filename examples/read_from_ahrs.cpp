@@ -11,7 +11,13 @@ void print_usage() {
 
 struct ahrs_callback {
     void operator()(const mini_ahrs_driver::AHRSOrientationData& data) {
-        std::cout << std::dec << "Y " << data.yaw_degrees << " P " << data.pitch_degrees << " R " << data.roll_degrees << "    \r" << std::flush;
+        std::cout << std::dec << "Y " << data.yaw_degrees 
+            << " P " << data.pitch_degrees
+            << " R " << data.roll_degrees
+            << " Gyro x " << data.gyro_x
+            << " Gyro y " << data.gyro_y
+            << " Gyro z " << data.gyro_z
+            << "    \r" << std::flush;
     }
 };
 
@@ -28,7 +34,7 @@ int main(int argc, char** argv) {
 
     std::cout << "Creating serial port instance for path " << serial_port << " at baudrate " << baudrate << std::endl;
     try {
-        ahrs_driver = std::unique_ptr<mini_ahrs_driver::MiniAHRSDriver>(new mini_ahrs_driver::MiniAHRSDriver(serial_port, baudrate));
+        ahrs_driver = std::unique_ptr<mini_ahrs_driver::MiniAHRSDriver>(new mini_ahrs_driver::MiniAHRSDriver(serial_port, baudrate, 1.0, 1.0));
     } catch(const serial::IOException& e) {
         std::cout << "Could not connect to serial port at " << serial_port << std::endl;
         std::cout << "error: " << e.what() << std::endl;

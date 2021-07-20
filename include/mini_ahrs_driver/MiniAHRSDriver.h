@@ -11,19 +11,19 @@
 namespace mini_ahrs_driver {
 
 struct AHRSOrientationData {
-    float roll_degrees;
-    float pitch_degrees;
-    float yaw_degrees;
-    float gyro_x;
-    float gyro_y;
-    float gyro_z;
-    float acc_x;
-    float acc_y;
-    float acc_z;
-    float mag_x;
-    float mag_y;
-    float mag_z;
-    float temperature;
+    double roll_degrees;
+    double pitch_degrees;
+    double yaw_degrees;
+    double gyro_x;
+    double gyro_y;
+    double gyro_z;
+    double acc_x;
+    double acc_y;
+    double acc_z;
+    double mag_x;
+    double mag_y;
+    double mag_z;
+    double temperature;
 }; // struct AHRSOrientationData
 
 class MiniAHRSDriver
@@ -32,13 +32,19 @@ public:
     bool have_device_info_;
     bool run_polling_thread_;
     bool have_device_params_;
+
+    // can be configured in the windows UI
     int data_rate_hz_;
     int initial_alignment_time_seconds_;
+
+    // these depend on the measurement ranges from your gyroscopre (see the ICD)
+    double KA_;
+    double KG_;
 
     std::string device_serial_number_;
     std::string device_firmware_version_;
 
-    MiniAHRSDriver(std::string serial_port_path, int baudrate);
+    MiniAHRSDriver(std::string serial_port_path, int baudrate, double KA, double KG);
     bool start();
     void stop();
     void setCallback(std::function<void(const AHRSOrientationData&)> cb);
