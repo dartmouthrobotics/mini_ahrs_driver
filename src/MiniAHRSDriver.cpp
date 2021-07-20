@@ -7,7 +7,7 @@
 namespace mini_ahrs_driver
 {
 
-MiniAHRSDriver::MiniAHRSDriver(std::string serial_port_path, int baudrate, double KA, double KG, bool verbose) : serial_connection_(serial_port_path, baudrate, serial::Timeout::simpleTimeout(SERIAL_CONNECT_TIMEOUT_MS)), run_polling_thread_(false), have_device_params_(false), KA_(KA), KG_(KG), verbose_(verbose)
+MiniAHRSDriver::MiniAHRSDriver(std::string serial_port_path, int baudrate, double KA, double KG, bool verbose) : serial_connection_(serial_port_path, baudrate, serial::Timeout::simpleTimeout(SERIAL_CONNECT_TIMEOUT_MS)), run_polling_thread_(false), have_device_params_(false), KA_(KA), KG_(KG), verbose_(verbose), have_device_info_(false)
 {
     if (!serial_connection_.isOpen()) {
         throw std::runtime_error(std::string("Could not open serial port at path ") + serial_port_path);
