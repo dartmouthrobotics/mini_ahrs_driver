@@ -70,7 +70,7 @@ bool MiniAHRSDriver::start() {
 
     run_polling_thread_ = true;
     worker_thread_ = std::thread(&MiniAHRSDriver::workerThreadMain, this); 
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1500));
 
     if (!have_device_info_) {
         if (verbose_) {
