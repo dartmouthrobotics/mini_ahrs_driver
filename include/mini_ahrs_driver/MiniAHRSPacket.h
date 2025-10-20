@@ -26,6 +26,13 @@ struct StartOrientationDataStreamCommandPacket
     };
 };
 
+struct StartUserDefineDataStreamCommandPacket
+{
+    const std::vector<uint8_t> buffer {
+        0xAA, 0x55, 0x00, 0x00, 0x07, 0x00, 0x95, 0x9C, 0x00 
+    };
+};
+
 struct StopDeviceCommandPacket
 {
     const std::vector<uint8_t> buffer {
