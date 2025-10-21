@@ -7,6 +7,7 @@
 #include <chrono>
 #include <iostream>
 #include <cstdint>
+#include <cmath>
 
 namespace mini_ahrs_driver
 {
@@ -144,13 +145,13 @@ HeaderData MiniAHRSDriver::parseHeader(const std::vector<uint8_t>& data) {
 AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector<uint8_t>& message_body, const std::vector<uint8_t>& data_list) {
     AHRSUserDefinednData result;
     int cnt = 0;
-    std::cout<< "data body: ";
-    for (uint8_t b : message_body) {
-       std::cout << static_cast<int>(b) << " ";
-    }
-    std::cout<< std::dec<<std::endl;
+    // std::cout<< "data body: ";
+    // for (uint8_t b : message_body) {
+    //    std::cout << static_cast<int>(b) << " ";
+    // }
+    // std::cout<< std::dec<<std::endl;
     for (auto data_type : data_list) {
-        std::cout << "data_type: " << std::hex<<static_cast<int>(data_type) <<std::dec <<std::endl;
+        // std::cout << "data_type: " << std::hex<<static_cast<int>(data_type) <<std::dec <<std::endl;
         switch (data_type) {
         case 0x01: {
 	    uint8_t low_res_time_raw[4];
@@ -163,7 +164,7 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
             std::memcpy(&low_res_time, &low_res_time_raw, sizeof low_res_time);
             result.low_res_time = double(low_res_time) * 0.001;
             cnt += 4;
-            std::cout << "result.low_res_time: "<< result.low_res_time <<std::endl;
+            // std::cout << "result.low_res_time: "<< result.low_res_time <<std::endl;
             break;
         }
         case 0x03: {
@@ -180,7 +181,7 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
             uint64_t hi_res_time;
             std::memcpy(&hi_res_time, &hi_res_time_raw, sizeof hi_res_time);
             result.hi_res_time = double(hi_res_time) * 1.0e-9;
-            std::cout<< "result.hi_res_time: "<< result.hi_res_time <<std::endl;
+            // std::cout<< "result.hi_res_time: "<< result.hi_res_time <<std::endl;
             cnt += 8;
             break;
         }
@@ -208,9 +209,9 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
 	    result.yaw_degrees = double(yaw) / 100.0;
 	    result.pitch_degrees = double(pitch) / 100.0;
 	    result.roll_degrees = double(roll) / 100.0;
-            std::cout<< "result.yaw_degrees: "<< result.yaw_degrees <<std::endl;
-            std::cout<< "result.pitch_degrees: "<< result.pitch_degrees <<std::endl;
-            std::cout<< "result.roll_degrees: "<< result.roll_degrees <<std::endl;
+            // std::cout<< "result.yaw_degrees: "<< result.yaw_degrees <<std::endl;
+            // std::cout<< "result.pitch_degrees: "<< result.pitch_degrees <<std::endl;
+            // std::cout<< "result.roll_degrees: "<< result.roll_degrees <<std::endl;
             cnt += 6;
             break;
         }
@@ -244,9 +245,9 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
 	    result.yaw_hr_degrees = double(yaw) / 1000.0;
 	    result.pitch_hr_degrees = double(pitch) / 1000.0;
 	    result.roll_hr_degrees = double(roll) / 1000.0;
-            std::cout<< "result.yaw_hr_degrees: "<< result.yaw_hr_degrees <<std::endl;
-            std::cout<< "result.pitch_hr_degrees: "<< result.pitch_hr_degrees <<std::endl;
-            std::cout<< "result.roll_hr_degrees: "<< result.roll_hr_degrees <<std::endl;
+            // std::cout<< "result.yaw_hr_degrees: "<< result.yaw_hr_degrees <<std::endl;
+            // std::cout<< "result.pitch_hr_degrees: "<< result.pitch_hr_degrees <<std::endl;
+            // std::cout<< "result.roll_hr_degrees: "<< result.roll_hr_degrees <<std::endl;
             cnt += 12;
             break;
         }
@@ -279,10 +280,10 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
 	    result.qy = double(qy) / 10000.0;
 	    result.qz = double(qz) / 10000.0;
             result.qz = double(qw) / 10000.0;
-            std::cout<< "result.qx: "<< result.qx <<std::endl;
-            std::cout<< "result.qy: "<< result.qy <<std::endl;
-            std::cout<< "result.qz: "<< result.qz <<std::endl;
-            std::cout<< "result.qw: "<< result.qw <<std::endl;
+            // std::cout<< "result.qx: "<< result.qx <<std::endl;
+            // std::cout<< "result.qy: "<< result.qy <<std::endl;
+            // std::cout<< "result.qz: "<< result.qz <<std::endl;
+            // std::cout<< "result.qw: "<< result.qw <<std::endl;
             cnt += 8;
             break;
         }
@@ -309,9 +310,9 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
 	    result.gyro_x = double(gyro_x) / KG_;
 	    result.gyro_y = double(gyro_y) / KG_;
 	    result.gyro_z = double(gyro_z) / KG_;
-            std::cout<< "result.gyro_x: "<< result.gyro_x <<std::endl;
-            std::cout<< "result.gyro_y: "<< result.gyro_y <<std::endl;
-            std::cout<< "result.gyro_z: "<< result.gyro_z <<std::endl;
+            // std::cout<< "result.gyro_x: "<< result.gyro_x <<std::endl;
+            // std::cout<< "result.gyro_y: "<< result.gyro_y <<std::endl;
+            // std::cout<< "result.gyro_z: "<< result.gyro_z <<std::endl;
             cnt += 6;            
             break;
         }
@@ -340,13 +341,14 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
 	    std::memcpy(&gyro_x, &gyro_x_raw, sizeof gyro_x);
 	    std::memcpy(&gyro_y, &gyro_y_raw, sizeof gyro_y);
 	    std::memcpy(&gyro_z, &gyro_z_raw, sizeof gyro_z);
-
-	    result.gyro_hr_x = double(gyro_x) / 1.0e5;
-	    result.gyro_hr_y = double(gyro_y) / 1.0e5;
-	    result.gyro_hr_z = double(gyro_z) / 1.0e5;
-            std::cout<< "result.gyro_hr_x: "<< result.gyro_hr_x <<std::endl;
-            std::cout<< "result.gyro_hr_y: "<< result.gyro_hr_y <<std::endl;
-            std::cout<< "result.gyro_hr_z: "<< result.gyro_hr_z <<std::endl;
+	    
+            double param = 180.0 / 1.0e5 / M_PI;
+	    result.gyro_hr_x = double(gyro_x) * param;
+	    result.gyro_hr_y = double(gyro_y) * param;
+	    result.gyro_hr_z = double(gyro_z) * param;
+            // std::cout<< "result.gyro_hr_x: "<< result.gyro_hr_x <<std::endl;
+            // std::cout<< "result.gyro_hr_y: "<< result.gyro_hr_y <<std::endl;
+            // std::cout<< "result.gyro_hr_z: "<< result.gyro_hr_z <<std::endl;
             cnt += 12;            
             break;
         }
@@ -374,9 +376,9 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
             result.acc_x = double(acc_x) / KA_;
             result.acc_y = double(acc_y) / KA_;
             result.acc_z = double(acc_z) / KA_;
-            std::cout<< "result.acc_x: "<< result.acc_x <<std::endl;
-            std::cout<< "result.acc_y: "<< result.acc_y <<std::endl;
-            std::cout<< "result.acc_z: "<< result.acc_z <<std::endl;
+            // std::cout<< "result.acc_x: "<< result.acc_x <<std::endl;
+            // std::cout<< "result.acc_y: "<< result.acc_y <<std::endl;
+            // std::cout<< "result.acc_z: "<< result.acc_z <<std::endl;
             cnt += 6;
             break;
         }
@@ -410,9 +412,9 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
             result.acc_hr_x = double(acc_x) / 1.0e6;
             result.acc_hr_y = double(acc_y) / 1.0e6;
             result.acc_hr_z = double(acc_z) / 1.0e6;
-            std::cout<< "result.acc_hr_x: "<< result.acc_hr_x <<std::endl;
-            std::cout<< "result.acc_hr_y: "<< result.acc_hr_y <<std::endl;
-            std::cout<< "result.acc_hr_z: "<< result.acc_hr_z <<std::endl;
+            // std::cout<< "result.acc_hr_x: "<< result.acc_hr_x <<std::endl;
+            // std::cout<< "result.acc_hr_y: "<< result.acc_hr_y <<std::endl;
+            // std::cout<< "result.acc_hr_z: "<< result.acc_hr_z <<std::endl;
             cnt += 12;            
             break;
         }
@@ -441,9 +443,9 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
             result.mag_x = double(mag_x) * 10.0;
             result.mag_y = double(mag_y) * 10.0;
             result.mag_z = double(mag_z) * 10.0;
-            std::cout<< "result.mag_x: "<< result.mag_x <<std::endl;
-            std::cout<< "result.mag_y: "<< result.mag_y <<std::endl;
-            std::cout<< "result.mag_z: "<< result.mag_z <<std::endl;
+            // std::cout<< "result.mag_x: "<< result.mag_x <<std::endl;
+            // std::cout<< "result.mag_y: "<< result.mag_y <<std::endl;
+            // std::cout<< "result.mag_z: "<< result.mag_z <<std::endl;
             cnt += 6;            
             break;
         }
@@ -458,7 +460,7 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
 	    std::memcpy(&voltage, &temp_volt, sizeof voltage);
 
             result.voltage = double(voltage) / 100.0;
-            std::cout<< "result.voltage: "<< result.voltage <<std::endl;
+            // std::cout<< "result.voltage: "<< result.voltage <<std::endl;
             cnt += 2;
             break;
         }
@@ -473,7 +475,7 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
 	    std::memcpy(&temperature, &temp_raw, sizeof temperature);
 
             result.temperature = double(temperature) / 10.0;
-            std::cout<< "result.temperature: "<< result.temperature <<std::endl;
+            // std::cout<< "result.temperature: "<< result.temperature <<std::endl;
             cnt += 2;            
             break;
         }
@@ -492,11 +494,14 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
     	   for (int i = 0; i < 16; ++i) {
     	       result.usw[i] = (usw >> i) & 1;
     	   }
-           std::cout<<"usw: ";
-           for (int i = 0; i  < 16; i++) {
-	       std::cout<< result.usw[i]<< " ";
+           // std::cout<<"usw: ";
+           for (int i = 0; i  < 13; i++) {
+               if (result.usw[i] != 0){
+                   std::cout<< "Non zero in usw, contact Inrtial Labs Support!" << '\n';
+               }
+	   //    std::cout<< result.usw[i]<< " ";
            }
-           std::cout<<std::endl;
+           // std::cout<<std::endl;
            cnt += 2;            
            break;
         }
@@ -506,12 +511,14 @@ AHRSUserDefinednData MiniAHRSDriver::parseUserDefinedDataBody (const std::vector
         }
         } 
     }
+    
+    return result;
 
 
 }
 
 AHRSOrientationData MiniAHRSDriver::parseUserDefinedData(const std::vector<uint8_t>& message_body) {
-    bool DEBUG = 1;
+    bool DEBUG = 0;
     AHRSOrientationData result;
     if (DEBUG) {
 	std::cout<< "msg body: ";
@@ -537,12 +544,34 @@ AHRSOrientationData MiniAHRSDriver::parseUserDefinedData(const std::vector<uint8
 	std::cout<< std::dec <<std::endl;
     }
     
-    if (pkg_num > message_body.size())
+    if (pkg_num > message_body.size()){
+        result.time = -1.0;
         return result;
+    }
+
 
     std::vector<uint8_t> data_body(message_body.begin() + pkg_num + 1, message_body.end());
     
     AHRSUserDefinednData custom_result = parseUserDefinedDataBody(data_body, data_list);
+    result.acc_x = custom_result.acc_hr_x;
+    result.acc_y = custom_result.acc_hr_y;
+    result.acc_z = custom_result.acc_hr_z;
+
+    result.gyro_x = custom_result.gyro_hr_x;
+    result.gyro_y = custom_result.gyro_hr_y;
+    result.gyro_z = custom_result.gyro_hr_z;
+
+    result.mag_x = custom_result.mag_x;
+    result.mag_y = custom_result.mag_y;
+    result.mag_z = custom_result.mag_z;
+
+    result.yaw_degrees = custom_result.yaw_hr_degrees;
+    result.pitch_degrees = custom_result.pitch_hr_degrees;
+    result.roll_degrees = custom_result.roll_hr_degrees;
+
+    result.temperature = custom_result.temperature;
+    
+    result.time = custom_result.hi_res_time;
 
     return result;
 }
@@ -642,8 +671,6 @@ AHRSOrientationData MiniAHRSDriver::parseOrientationData(const std::vector<uint8
     std::memcpy(&acc_z, &accel_z_raw, sizeof acc_z);
 
     std::memcpy(&temperature, &temp_raw, sizeof temperature);
-
-    std::cout << "temperature: "<< temperature << std::endl;
 
     result.acc_x = double(acc_x) / KA_;
     result.acc_y = double(acc_y) / KA_;
